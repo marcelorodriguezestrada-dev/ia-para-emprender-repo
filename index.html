@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA para Emprender — De la idea al primer cliente, con inteligencia artificial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0A0F0F;
+    --bg-soft: #0F1717;
+    --panel: #121C1C;
+    --line: #223030;
+    --teal: #2FE0B8;
+    --teal-dim: #1C8A70;
+    --gold: #F0B429;
+    --paper: #EDF3F1;
+    --paper-dim: #A9B8B5;
+    --display: 'Unbounded', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--paper);
+    font-family: var(--body);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+
+  .wrap{ max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  section{ position:relative; }
+
+  /* ---------- background texture ---------- */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(600px 400px at 12% 0%, rgba(47,224,184,0.10), transparent 60%),
+      radial-gradient(500px 500px at 90% 20%, rgba(240,180,41,0.08), transparent 55%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position: sticky; top:0; z-index:50;
+    background: rgba(10,15,15,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 24px;
+    max-width:1160px; margin:0 auto;
+  }
+  .logo{
+    font-family: var(--display); font-weight:700; font-size: 1.05rem;
+    letter-spacing: 0.01em;
+  }
+  .logo span{ color: var(--teal); }
+  .nav-cta{
+    background: var(--teal);
+    color: #06201A;
+    font-family: var(--mono);
+    font-weight:600;
+    font-size: 0.8rem;
+    padding: 10px 18px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{ padding: 88px 0 64px; position:relative; z-index:1; }
+  .eyebrow{
+    font-family: var(--mono);
+    color: var(--teal);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 22px;
+  }
+  .eyebrow::before{
+    content:""; width:8px; height:8px; border-radius:50%;
+    background: var(--teal);
+    box-shadow: 0 0 12px 2px rgba(47,224,184,0.8);
+  }
+  h1{
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+    line-height: 1.08;
+    max-width: 780px;
+    letter-spacing: -0.01em;
+  }
+  h1 em{
+    font-style:normal;
+    color: var(--teal);
+  }
+  .hero-sub{
+    margin-top: 22px;
+    font-size: 1.1rem;
+    color: var(--paper-dim);
+    max-width: 560px;
+  }
+  .hero-actions{
+    display:flex; flex-wrap:wrap; gap:14px;
+    margin-top: 34px;
+    align-items:center;
+  }
+  .btn-primary{
+    background: var(--gold);
+    color: #201502;
+    font-weight:700;
+    padding: 16px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    display:inline-flex; align-items:center; gap:10px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 0 0 rgba(240,180,41,0);
+  }
+  .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 10px 30px -8px rgba(240,180,41,0.5); }
+  .hero-meta{
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--paper-dim);
+  }
+  .hero-stats{
+    display:flex; gap: 36px; margin-top: 56px; flex-wrap:wrap;
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+  }
+  .stat b{
+    font-family: var(--display);
+    font-size: 1.7rem; display:block;
+    color: var(--paper);
+  }
+  .stat span{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--paper-dim);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ---------- section heads ---------- */
+  .sec-head{ max-width: 620px; margin-bottom: 48px; }
+  .sec-eyebrow{
+    font-family: var(--mono); color: var(--gold);
+    font-size: 0.75rem; letter-spacing:0.12em; text-transform:uppercase;
+    margin-bottom: 14px; display:block;
+  }
+  h2{
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 3.4vw, 2.3rem);
+    line-height:1.15;
+  }
+  .sec-desc{ margin-top:14px; color: var(--paper-dim); font-size: 1.02rem; }
+
+  /* ---------- ruta / path ---------- */
+  .ruta{ padding: 90px 0 40px; position:relative; z-index:1; }
+  .path-rail{
+    position:relative;
+    display:flex; flex-direction:column;
+    gap: 0;
+  }
+  .path-track{
+    position:absolute; left: 27px; top: 30px; bottom: 30px;
+    width:2px;
+    background: repeating-linear-gradient(to bottom, var(--teal-dim) 0 6px, transparent 6px 12px);
+  }
+  .stop{
+    display:grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    padding: 26px 0;
+    position:relative;
+  }
+  .node{
+    width:56px; height:56px; border-radius:50%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--mono); font-weight:600; color: var(--teal);
+    position:relative; z-index:2;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .stop:hover .node{
+    border-color: var(--teal);
+    box-shadow: 0 0 0 6px rgba(47,224,184,0.08);
+  }
+  .stop-card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 22px 26px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .stop:hover .stop-card{ border-color: rgba(47,224,184,0.35); transform: translateX(4px); }
+  .stop-label{
+    font-family: var(--mono); font-size: 0.72rem; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-bottom:8px; display:block;
+  }
+  .stop-card h3{
+    font-family: var(--display); font-weight:600;
+    font-size: 1.12rem; margin-bottom: 8px; color: var(--paper);
+  }
+  .stop-card p{ color: var(--paper-dim); font-size: 0.95rem; }
+
+  /* ---------- para quien / incluye ---------- */
+  .split{
+    padding: 90px 0;
+    display:grid; grid-template-columns: 1fr 1fr; gap: 60px;
+    position:relative; z-index:1;
+  }
+  .check-list li{
+    display:flex; gap:12px; padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.98rem; color: var(--paper);
+  }
+  .check-list li::before{
+    content:"→"; color: var(--teal); font-family: var(--mono); flex-shrink:0;
+  }
+  .no-list li{
+    display:flex; gap:12px; padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.98rem; color: var(--paper-dim);
+  }
+  .no-list li::before{
+    content:"×"; color: #6b5030; font-family: var(--mono); flex-shrink:0;
+  }
+  .col-title{
+    font-family: var(--mono); font-size: 0.78rem; letter-spacing:0.1em;
+    text-transform:uppercase; margin-bottom: 20px; display:block;
+  }
+  .col-title.yes{ color: var(--teal); }
+  .col-title.no{ color: var(--paper-dim); }
+
+  /* ---------- instructores ---------- */
+  .instructores{ padding: 40px 0 90px; position:relative; z-index:1; }
+  .instr-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap: 28px;
+  }
+  .instr-card{
+    background: var(--panel); border:1px solid var(--line);
+    border-radius: 16px; padding: 30px;
+    display:flex; gap:20px; align-items:flex-start;
+  }
+  .avatar{
+    width:64px; height:64px; border-radius:50%; flex-shrink:0;
+    background: linear-gradient(135deg, var(--teal-dim), var(--teal));
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--display); font-weight:700; color:#06201A; font-size:1.2rem;
+  }
+  .instr-card h4{ font-family: var(--display); font-size:1.05rem; margin-bottom:4px; }
+  .instr-role{ font-family: var(--mono); font-size:0.72rem; color: var(--gold); letter-spacing:0.06em; text-transform:uppercase; }
+  .instr-card p{ margin-top:10px; color: var(--paper-dim); font-size:0.92rem; }
+  .edit-note{
+    font-family: var(--mono); font-size: 0.68rem; color: #6b6b3a;
+    margin-top: 10px; display:block;
+  }
+
+  /* ---------- pricing ---------- */
+  .pricing{ padding: 40px 0 100px; position:relative; z-index:1; }
+  .price-card{
+    background: linear-gradient(160deg, var(--panel), #0D1616);
+    border: 1px solid var(--teal-dim);
+    border-radius: 22px;
+    padding: 48px;
+    display:grid; grid-template-columns: 1.3fr 1fr; gap: 40px;
+    align-items:center;
+  }
+  .price-left h3{ font-family: var(--display); font-size:1.5rem; margin-bottom:14px; }
+  .price-left p{ color: var(--paper-dim); }
+  .price-right{ text-align:center; border-left:1px solid var(--line); padding-left:40px; }
+  .country-toggle{
+    display:inline-flex; background: var(--bg-soft); border:1px solid var(--line);
+    border-radius: 999px; padding:4px; margin-bottom:20px;
+  }
+  .ctoggle{
+    font-family: var(--mono); font-size:0.75rem; color: var(--paper-dim);
+    background:none; border:none; padding:8px 14px; border-radius:999px;
+    cursor:pointer; transition: background .15s ease, color .15s ease;
+  }
+  .ctoggle.active{ background: var(--teal); color:#06201A; font-weight:600; }
+  .price-tag{
+    font-family: var(--display); font-weight:900;
+    font-size: 3rem; color: var(--gold);
+  }
+  .price-tag sup{ font-size:1.2rem; vertical-align: super; }
+  .price-note{ font-family: var(--mono); font-size:0.75rem; color: var(--paper-dim); margin-top:6px; }
+  .btn-block{
+    display:block; width:100%; text-align:center;
+    background: var(--teal); color:#06201A; font-weight:700;
+    padding: 16px; border-radius:10px; margin-top:22px;
+  }
+  .includes{ margin-top:26px; display:flex; flex-direction:column; gap:10px; }
+  .includes li{ font-size:0.9rem; color:var(--paper); display:flex; gap:10px; }
+  .includes li::before{ content:"✓"; color:var(--teal); }
+
+  /* ---------- faq ---------- */
+  .faq{ padding: 40px 0 110px; position:relative; z-index:1; max-width: 760px; margin:0 auto; }
+  .faq-item{ border-bottom:1px solid var(--line); }
+  .faq-q{
+    padding: 22px 0; display:flex; justify-content:space-between; align-items:center;
+    cursor:pointer; font-family: var(--display); font-weight:600; font-size:1rem;
+  }
+  .faq-q::after{
+    content:"+"; font-family: var(--mono); font-size:1.3rem; color: var(--teal);
+    transition: transform .2s ease;
+  }
+  .faq-item.open .faq-q::after{ transform: rotate(45deg); }
+  .faq-a{
+    max-height:0; overflow:hidden; transition: max-height .25s ease;
+    color: var(--paper-dim); font-size:0.95rem;
+  }
+  .faq-item.open .faq-a{ max-height: 200px; padding-bottom: 22px; }
+
+  /* ---------- final cta ---------- */
+  .final-cta{
+    padding: 90px 0 110px; text-align:center; position:relative; z-index:1;
+  }
+  .final-cta h2{ max-width:640px; margin:0 auto; }
+  .final-cta .btn-primary{ margin-top:30px; }
+
+  footer{
+    border-top:1px solid var(--line); padding: 30px 0;
+    font-family: var(--mono); font-size:0.75rem; color: var(--paper-dim);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  /* floating whatsapp */
+  .wa-float{
+    position:fixed; bottom:22px; right:22px; z-index:60;
+    background: var(--teal); color:#06201A;
+    width:58px; height:58px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 8px 24px rgba(47,224,184,0.35);
+  }
+  .wa-float svg{ width:26px; height:26px; }
+
+  @media (max-width: 760px){
+    .split{ grid-template-columns: 1fr; gap:40px; }
+    .instr-grid{ grid-template-columns: 1fr; }
+    .price-card{ grid-template-columns: 1fr; }
+    .price-right{ border-left:none; border-top:1px solid var(--line); padding-left:0; padding-top:24px; }
+    .stop{ grid-template-columns: 40px 1fr; }
+    .node{ width:40px; height:40px; font-size:0.8rem; }
+    .path-track{ left: 19px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">IA para <span>Emprender</span></div>
+    <a class="nav-cta" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">Quiero anotarme →</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow">7 clases · Cupo reducido · En vivo</span>
+    <h1>Aprendé a usar la <em>inteligencia artificial</em> para crear, vender y conseguir clientes — sin saber programar.</h1>
+    <p class="hero-sub">Un recorrido de 7 clases prácticas donde salís con contenido hecho, tu WhatsApp automatizado, un producto digital propio, tu página de venta, tu primera campaña, y un camino claro para vivir de tu negocio.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">
+        Reservar mi lugar por WhatsApp
+      </a>
+      <span class="hero-meta">Cupos limitados por grupo</span>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><b>07</b><span>Clases en vivo</span></div>
+      <div class="stat"><b>100%</b><span>Práctico, con IA en mano</span></div>
+      <div class="stat"><b>2</b><span>Profesores guiando el proceso</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="ruta" id="ruta">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">Tu ruta de aprendizaje</span>
+      <h2>Siete clases, un negocio funcionando de punta a punta</h2>
+      <p class="sec-desc">Cada clase te deja algo terminado y usable — no son apuntes, son herramientas que quedan trabajando para vos.</p>
+    </div>
+
+    <div class="path-rail">
+      <div class="path-track"></div>
+
+      <div class="stop">
+        <div class="node">01</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 1 — Estrategia</span>
+          <h3>Estrategia ganadora con IA</h3>
+          <p>Generación de contenido en video, imágenes y avatares con inteligencia artificial. Salís con tu primera tanda de contenido lista.</p>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="node">02</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 2 — Automatización</span>
+          <h3>Automatizá redes sociales y tu WhatsApp</h3>
+          <p>Configurás respuestas automáticas e inteligentes en tus redes y tu WhatsApp para no perder ni un contacto.</p>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="node">03</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 3 — Producto</span>
+          <h3>Generá ingresos con productos digitales</h3>
+          <p>Armás tu primer producto digital con ayuda de IA: algo concreto que podés empezar a vender esa misma semana.</p>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="node">04</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 4 — Venta</span>
+          <h3>Creá tu página de venta</h3>
+          <p>Armás tu página de venta con inteligencia artificial y copiás nuestros embudos probados, paso a paso.</p>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="node">05</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 5 — Clientes</span>
+          <h3>Tu primera campaña publicitaria</h3>
+          <p>Armás, paso a paso, tu campaña publicitaria para empezar a conseguir clientes reales.</p>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="node">06</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 6 — Rentabilidad</span>
+          <h3>Una IA para conseguir clientes sin invertir en publicidad</h3>
+          <p>Y cómo saber, con números concretos, si tu negocio es rentable antes de escalarlo.</p>
+        </div>
+      </div>
+
+      <div class="stop">
+        <div class="node">07</div>
+        <div class="stop-card">
+          <span class="stop-label">Clase 7 — Cierre</span>
+          <h3>Los 4 caminos para vivir 100% de internet</h3>
+          <p>Salís del curso con un camino elegido y claro para sostener tu negocio online.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="split">
+  <div class="wrap" style="display:grid; grid-template-columns:1fr 1fr; gap:60px;">
+    <div>
+      <span class="col-title yes">Es para vos si...</span>
+      <ul class="check-list">
+        <li>Tenés una idea de negocio y no sabés por dónde arrancar</li>
+        <li>Ya vendés algo pero hacés todo a mano, sin herramientas</li>
+        <li>Querés aprender IA aplicada a resultados, no teoría suelta</li>
+        <li>Preferís aprender haciendo, con ayuda en vivo</li>
+      </ul>
+    </div>
+    <div>
+      <span class="col-title no">No es para vos si...</span>
+      <ul class="no-list">
+        <li>Buscás un curso técnico de programación</li>
+        <li>Esperás resultados sin poner tiempo entre clases</li>
+        <li>Ya tenés un equipo de marketing armado y funcionando</li>
+        <li>Buscás una fórmula mágica sin trabajo real</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="instructores">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">Quiénes lo dan</span>
+      <h2>Dos personas que van a estar en vivo, clase a clase</h2>
+    </div>
+    <div class="instr-grid">
+      <div class="instr-card">
+        <div class="avatar">D</div>
+        <div>
+          <h4>Daniel [Apellido]</h4>
+          <span class="instr-role">Profesor</span>
+          <p>Acá va una bio corta de Daniel: qué hizo, con qué negocios trabajó, por qué sabe de esto. 2-3 líneas alcanzan.</p>
+          <span class="edit-note">← editar con la bio real de Daniel</span>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="avatar">T</div>
+        <div>
+          <h4>Tu nombre</h4>
+          <span class="instr-role">Profesor</span>
+          <p>Acá va tu bio corta: qué construiste, qué proyectos armaste con IA, por qué das este curso.</p>
+          <span class="edit-note">← editar con tu bio real</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing">
+  <div class="wrap">
+    <div class="price-card">
+      <div class="price-left">
+        <h3>IA para Emprender</h3>
+        <p>7 clases en vivo con Daniel y [tu nombre]. Grupo reducido para que cada uno salga con su contenido, su producto, su página de venta y su plan de rentabilidad hechos, no solo con la teoría.</p>
+        <ul class="includes">
+          <li>7 clases en vivo (quedan grabadas)</li>
+          <li>Grupo de acompañamiento entre clases</li>
+          <li>Plantillas y embudos listos para copiar</li>
+          <li>Certificado de finalización</li>
+        </ul>
+      </div>
+      <div class="price-right">
+        <div class="country-toggle">
+          <button type="button" class="ctoggle active" data-country="ar" onclick="setCountry('ar')">🇦🇷 Argentina</button>
+          <button type="button" class="ctoggle" data-country="bo" onclick="setCountry('bo')">🇧🇴 Bolivia</button>
+        </div>
+        <div class="price-tag"><span id="price-symbol">$</span><span id="price-value">XX.XXX</span></div>
+        <div class="price-note" id="price-note">pago único · ARS · ← reemplazar por tu precio real</div>
+        <a class="btn-block" id="price-cta" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">Anotarme por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq">
+  <div class="sec-head" style="max-width:none;">
+    <span class="sec-eyebrow">Preguntas frecuentes</span>
+    <h2>Antes de anotarte</h2>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">¿Necesito saber de tecnología o programación?</div>
+    <div class="faq-a"><p>No. Todo se enseña con herramientas de IA que se usan sin escribir código. Si sabés usar el celular y WhatsApp, podés seguir el curso.</p></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">¿Y si me pierdo una clase?</div>
+    <div class="faq-a"><p>Todas las clases quedan grabadas para que las veas cuando puedas.</p></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">¿Ya tengo que tener un negocio armado?</div>
+    <div class="faq-a"><p>No, sirve tanto si ya vendés algo como si todavía estás por arrancar. La ruta funciona para los dos casos.</p></div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q">¿Cómo me anoto?</div>
+    <div class="faq-a"><p>Escribinos por WhatsApp con el botón de esta página y te pasamos los datos para reservar tu lugar.</p></div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Tu negocio con IA empieza en la Clase 1.</h2>
+    <a class="btn-primary" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">Reservar mi lugar por WhatsApp</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; width:100%; flex-wrap:wrap; gap:10px;">
+    <span>IA PARA EMPRENDER — 2026</span>
+    <span>Dictado por Daniel &amp; [Tu nombre]</span>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5491100000000?text=Hola!%20quiero%20info%20de%20IA%20para%20Emprender" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.4a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.9C21.96 6.45 17.5 2 12.04 2zm5.8 14.02c-.24.68-1.4 1.3-1.93 1.35-.5.05-1.02.24-3.42-.71-2.9-1.16-4.76-4.08-4.9-4.27-.14-.19-1.17-1.56-1.17-2.98 0-1.42.74-2.11 1-2.4.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.8 2 .87 2.14.07.14.12.31.02.5-.1.19-.15.31-.3.48-.14.17-.3.37-.43.5-.14.14-.29.29-.13.57.17.29.75 1.24 1.61 2 1.11.99 2.04 1.3 2.33 1.44.29.14.46.12.63-.07.17-.19.72-.84.92-1.13.19-.29.38-.24.65-.14.26.1 1.68.79 1.97.93.29.14.48.22.55.34.07.12.07.7-.17 1.38z"/></svg>
+</a>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN — editá solo esto para dejar la página lista
+   ============================================================ */
+const CONFIG = {
+  whatsapp: {
+    ar: "5491100000000",   // tu WhatsApp con código de país, sin + ni espacios
+    bo: "59100000000",     // WhatsApp para Bolivia (puede ser el mismo número)
+  },
+  precios: {
+    ar: { simbolo: "$",  valor: "XX.XXX", moneda: "ARS" },
+    bo: { simbolo: "Bs", valor: "XXX",    moneda: "BOB" },
+  },
+  mensajeWhatsapp: "Hola! quiero anotarme en IA para Emprender",
+};
+/* ============================================================ */
+
+function setCountry(pais){
+  document.querySelectorAll('.ctoggle').forEach(b=>{
+    b.classList.toggle('active', b.dataset.country === pais);
+  });
+  const precio = CONFIG.precios[pais];
+  document.getElementById('price-symbol').textContent = precio.simbolo;
+  document.getElementById('price-value').textContent = precio.valor;
+  document.getElementById('price-note').textContent =
+    `pago único · ${precio.moneda} · ← reemplazar por tu precio real`;
+
+  const numero = CONFIG.whatsapp[pais];
+  const texto = encodeURIComponent(CONFIG.mensajeWhatsapp);
+  document.getElementById('price-cta').href = `https://wa.me/${numero}?text=${texto}`;
+}
+
+// Estado inicial
+setCountry('ar');
+
+document.querySelectorAll('.faq-item').forEach(item=>{
+  item.querySelector('.faq-q').addEventListener('click', ()=>{
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(o=>o.classList.remove('open'));
+    if(!isOpen) item.classList.add('open');
+  });
+});
+</script>
+
+</body>
+</html>
