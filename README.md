@@ -40,9 +40,28 @@ git push -u origin main
 ## Estructura
 
 ```
-index.html   → toda la landing (HTML + CSS + JS en un solo archivo)
-README.md    → este archivo
+index.html                    → versión estática (HTML + CSS + JS en un solo archivo)
+IAParaEmprenderLanding.tsx    → versión React/Next.js (mismo diseño, con estado)
+README.md                     → este archivo
 ```
+
+## Sobre la versión TSX
+
+`IAParaEmprenderLanding.tsx` es un componente de React pensado para Next.js (App Router). Usa `styled-jsx`, que ya viene integrado en Next.js — no hace falta instalar nada extra.
+
+**Cómo usarlo:**
+1. Copiá el archivo a tu proyecto, por ejemplo a `components/IAParaEmprenderLanding.tsx`
+2. Import y uso en tu página, por ejemplo en `app/page.tsx`:
+   ```tsx
+   import IAParaEmprenderLanding from "@/components/IAParaEmprenderLanding";
+
+   export default function Page() {
+     return <IAParaEmprenderLanding />;
+   }
+   ```
+3. Editá el mismo bloque `CONFIG` que en la versión HTML (está arriba del todo del archivo) con tus WhatsApp y precios reales.
+
+Si tu proyecto usa Vite/CRA en vez de Next.js, funciona igual — `styled-jsx` no es exclusivo de Next, solo asegurate de tener `styled-jsx` en tus dependencias (`npm i styled-jsx`) si tu setup no lo trae por defecto.
 
 ## Próximos pasos sugeridos
 
