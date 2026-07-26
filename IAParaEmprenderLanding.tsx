@@ -65,6 +65,13 @@ const CLASES = [
   },
 ] as const;
 
+const CRONOGRAMA = [
+  { semana: "Semana 1", dias: "Día 1 y Día 2", clases: "Clase 1 (Estrategia) + Clase 2 (Automatización)" },
+  { semana: "Semana 2", dias: "Día 3 y Día 4", clases: "Clase 3 (Producto) + Clase 4 (Venta)" },
+  { semana: "Semana 3", dias: "Día 5 y Día 6", clases: "Clase 5 (Clientes) + Clase 6 (Rentabilidad)" },
+  { semana: "Semana 4", dias: "Día 7 y Día 8", clases: "Clase 7 (Caminos) + Cierre y certificado" },
+] as const;
+
 const FAQS = [
   {
     q: "¿Necesito saber de tecnología o programación?",
@@ -398,6 +405,43 @@ export default function IAParaEmprenderLanding() {
           position: relative;
           z-index: 1;
         }
+        .landing .cronograma {
+          padding: 20px 0 40px;
+          position: relative;
+          z-index: 1;
+        }
+        .landing .cron-table {
+          border: 1px solid var(--line);
+          border-radius: 14px;
+          overflow: hidden;
+        }
+        .landing .cron-row {
+          display: grid;
+          grid-template-columns: 0.8fr 0.9fr 1.6fr;
+          gap: 16px;
+          padding: 16px 22px;
+          border-bottom: 1px solid var(--line);
+          font-size: 0.92rem;
+        }
+        .landing .cron-row:last-child {
+          border-bottom: none;
+        }
+        .landing .cron-head {
+          background: var(--panel);
+          font-family: var(--mono);
+          font-size: 0.72rem;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: var(--gold);
+        }
+        .landing .cron-row:not(.cron-head) span:first-child {
+          font-family: var(--display);
+          font-weight: 600;
+          color: var(--teal);
+        }
+        .landing .cron-row:not(.cron-head) {
+          color: var(--paper-dim);
+        }
         .landing .check-list li {
           display: flex;
           gap: 12px;
@@ -682,6 +726,13 @@ export default function IAParaEmprenderLanding() {
         }
 
         @media (max-width: 760px) {
+          .landing .cron-row {
+            grid-template-columns: 1fr;
+            gap: 4px;
+          }
+          .landing .cron-row span:not(:first-child) {
+            font-size: 0.85rem;
+          }
           .landing .split {
             grid-template-columns: 1fr;
             gap: 40px;
@@ -788,6 +839,33 @@ export default function IAParaEmprenderLanding() {
                   <h3>{c.title}</h3>
                   <p>{c.desc}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="cronograma">
+        <div className="wrap">
+          <div className="sec-head">
+            <span className="sec-eyebrow">Cuándo se dicta</span>
+            <h2>4 semanas, 2 encuentros en vivo por semana</h2>
+            <p className="sec-desc">
+              90 minutos por encuentro. Entre clase y clase, 2-3 días para aplicar lo que viste con tu propio
+              negocio.
+            </p>
+          </div>
+          <div className="cron-table">
+            <div className="cron-row cron-head">
+              <span>Semana</span>
+              <span>Encuentros</span>
+              <span>Clases</span>
+            </div>
+            {CRONOGRAMA.map((c) => (
+              <div className="cron-row" key={c.semana}>
+                <span>{c.semana}</span>
+                <span>{c.dias}</span>
+                <span>{c.clases}</span>
               </div>
             ))}
           </div>

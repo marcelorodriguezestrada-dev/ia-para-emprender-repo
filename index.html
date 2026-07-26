@@ -216,6 +216,36 @@
   }
   .stop-card p{ color: var(--paper-dim); font-size: 0.95rem; }
 
+  /* ---------- cronograma ---------- */
+  .cronograma{ padding: 20px 0 40px; position:relative; z-index:1; }
+  .cron-table{
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .cron-row{
+    display:grid; grid-template-columns: 0.8fr 0.9fr 1.6fr;
+    gap: 16px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.92rem;
+  }
+  .cron-row:last-child{ border-bottom:none; }
+  .cron-head{
+    background: var(--panel);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .cron-row:not(.cron-head) span:first-child{
+    font-family: var(--display);
+    font-weight:600;
+    color: var(--teal);
+  }
+  .cron-row:not(.cron-head){ color: var(--paper-dim); }
+
   /* ---------- para quien / incluye ---------- */
   .split{
     padding: 90px 0;
@@ -349,6 +379,8 @@
   .wa-float svg{ width:26px; height:26px; }
 
   @media (max-width: 760px){
+    .cron-row{ grid-template-columns: 1fr; gap:4px; }
+    .cron-row span:not(:first-child){ font-size:0.85rem; }
     .split{ grid-template-columns: 1fr; gap:40px; }
     .instr-grid{ grid-template-columns: 1fr; }
     .price-card{ grid-template-columns: 1fr; }
@@ -468,7 +500,42 @@
   </div>
 </section>
 
-<section class="split">
+<section class="cronograma">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="sec-eyebrow">Cuándo se dicta</span>
+      <h2>4 semanas, 2 encuentros en vivo por semana</h2>
+      <p class="sec-desc">90 minutos por encuentro. Entre clase y clase, 2-3 días para aplicar lo que viste con tu propio negocio.</p>
+    </div>
+    <div class="cron-table">
+      <div class="cron-row cron-head">
+        <span>Semana</span>
+        <span>Encuentros</span>
+        <span>Clases</span>
+      </div>
+      <div class="cron-row">
+        <span>Semana 1</span>
+        <span>Día 1 y Día 2</span>
+        <span>Clase 1 (Estrategia) + Clase 2 (Automatización)</span>
+      </div>
+      <div class="cron-row">
+        <span>Semana 2</span>
+        <span>Día 3 y Día 4</span>
+        <span>Clase 3 (Producto) + Clase 4 (Venta)</span>
+      </div>
+      <div class="cron-row">
+        <span>Semana 3</span>
+        <span>Día 5 y Día 6</span>
+        <span>Clase 5 (Clientes) + Clase 6 (Rentabilidad)</span>
+      </div>
+      <div class="cron-row">
+        <span>Semana 4</span>
+        <span>Día 7 y Día 8</span>
+        <span>Clase 7 (Caminos) + Cierre y certificado</span>
+      </div>
+    </div>
+  </div>
+</section>
   <div class="wrap" style="display:grid; grid-template-columns:1fr 1fr; gap:60px;">
     <div>
       <span class="col-title yes">Es para vos si...</span>
