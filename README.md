@@ -10,6 +10,7 @@ Todo está agrupado arriba del todo en el archivo, dentro de `index.html`, en un
    - Ojo: además de ese bloque, hay 3 botones más arriba en la página (nav, hero, botón flotante) que también apuntan a WhatsApp — están escritos directo en el HTML como `https://wa.me/5491100000000...`. Buscá y reemplazá ese número también ahí (Ctrl+F `5491100000000`).
 2. **Precios**: valor en pesos argentinos y en bolivianos. El selector 🇦🇷/🇧🇴 de la sección de precio ya cambia el número automáticamente.
 3. **Instructores**: reemplazá "Daniel [Apellido]" y "Tu nombre" por los nombres y bios reales, en la sección "Quiénes lo dan".
+4. **Fecha de apertura**: el campo `fechaApertura` dentro de `CONFIG` controla el banner de cuenta regresiva de arriba de todo ("Abrimos inscripciones en X días"). Poné ahí la fecha y hora real en que termina la difusión gratuita de 3 días y abrís la venta. Una vez que pasa esa fecha, el banner cambia solo a "¡Ya abrimos inscripciones!".
 
 ## Cómo publicarla (elegí una)
 

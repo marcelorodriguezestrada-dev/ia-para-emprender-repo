@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /* ============================================================
    CONFIGURACIÓN — editá solo esto para dejar la página lista
@@ -17,6 +17,9 @@ const CONFIG = {
     bo: { simbolo: "Bs", valor: "XXX", moneda: "BOB" },
   },
   mensajeWhatsapp: "Hola! quiero anotarme en IA para Emprender",
+  // Fecha y hora en que ABRE la inscripción (fin de los 3 días de difusión).
+  // Formato: "YYYY-MM-DDTHH:MM:SS-03:00" (-03:00 es el huso horario de Argentina)
+  fechaApertura: "2026-08-03T19:00:00-03:00",
 };
 /* ============================================================ */
 
@@ -98,6 +101,26 @@ function waLink(numero: string, texto: string) {
 export default function IAParaEmprenderLanding() {
   const [country, setCountry] = useState<Country>("ar");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  // Empieza vacío y se calcula en useEffect (solo en el cliente) para evitar
+  // que el texto no coincida entre el render del servidor y el del browser.
+  const [bannerTexto, setBannerTexto] = useState("");
+
+  useEffect(() => {
+    const apertura = new Date(CONFIG.fechaApertura).getTime();
+    const msRestantes = apertura - Date.now();
+
+    if (msRestantes <= 0) {
+      setBannerTexto("🚀 ¡Ya abrimos inscripciones! Anotate antes de que se llene el cupo");
+      return;
+    }
+
+    const dias = Math.ceil(msRestantes / (1000 * 60 * 60 * 24));
+    setBannerTexto(
+      dias <= 1
+        ? "⏳ Abrimos inscripciones HOY — quedate atento"
+        : `⏳ Abrimos inscripciones en ${dias} días — cupos limitados`
+    );
+  }, []);
 
   const precio = CONFIG.precios[country];
   const ctaPrecioHref = waLink(CONFIG.whatsapp[country], CONFIG.mensajeWhatsapp);
@@ -174,6 +197,16 @@ export default function IAParaEmprenderLanding() {
           background: rgba(10, 15, 15, 0.85);
           backdrop-filter: blur(10px);
           border-bottom: 1px solid var(--line);
+        }
+        .landing .launch-banner {
+          background: var(--gold);
+          color: #201502;
+          text-align: center;
+          font-family: var(--mono);
+          font-size: 0.8rem;
+          font-weight: 600;
+          padding: 10px 16px;
+          letter-spacing: 0.02em;
         }
         .landing .nav {
           display: flex;
@@ -771,6 +804,8 @@ export default function IAParaEmprenderLanding() {
       `}</style>
 
       <div className="bg-glow" />
+
+      {bannerTexto && <div className="launch-banner">{bannerTexto}</div>}
 
       <header>
         <div className="nav">

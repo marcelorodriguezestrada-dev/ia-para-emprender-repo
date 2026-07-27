@@ -56,6 +56,17 @@
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
   }
+  .launch-banner{
+    background: var(--gold);
+    color: #201502;
+    text-align:center;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight:600;
+    padding: 10px 16px;
+    letter-spacing: 0.02em;
+  }
+  .launch-banner.hidden{ display:none; }
   .nav{
     display:flex; align-items:center; justify-content:space-between;
     padding: 16px 24px;
@@ -397,6 +408,8 @@
 </head>
 <body>
 
+<div class="launch-banner" id="launch-banner"></div>
+
 <header>
   <div class="nav">
     <div class="logo">IA para <span>Emprender</span></div>
@@ -669,8 +682,31 @@ const CONFIG = {
     bo: { simbolo: "Bs", valor: "XXX",    moneda: "BOB" },
   },
   mensajeWhatsapp: "Hola! quiero anotarme en IA para Emprender",
+  // Fecha y hora en que ABRE la inscripción (fin de los 3 días de difusión).
+  // Formato: "YYYY-MM-DDTHH:MM:SS-03:00" (-03:00 es el huso horario de Argentina)
+  fechaApertura: "2026-08-03T19:00:00-03:00",
 };
 /* ============================================================ */
+
+function actualizarBanner(){
+  const banner = document.getElementById('launch-banner');
+  const ahora = new Date();
+  const apertura = new Date(CONFIG.fechaApertura);
+  const msRestantes = apertura.getTime() - ahora.getTime();
+
+  if (msRestantes <= 0){
+    banner.textContent = "🚀 ¡Ya abrimos inscripciones! Anotate antes de que se llene el cupo";
+    return;
+  }
+
+  const dias = Math.ceil(msRestantes / (1000 * 60 * 60 * 24));
+  if (dias <= 1){
+    banner.textContent = "⏳ Abrimos inscripciones HOY — quedate atento";
+  } else {
+    banner.textContent = `⏳ Abrimos inscripciones en ${dias} días — cupos limitados`;
+  }
+}
+actualizarBanner();
 
 function setCountry(pais){
   document.querySelectorAll('.ctoggle').forEach(b=>{
