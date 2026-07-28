@@ -38,11 +38,38 @@ git branch -M main
 git push -u origin main
 ```
 
+## Flujo de captura: registro.html → gracias.html
+
+Para la clase gratuita, el recorrido es: **landing → `registro.html` (nombre + mail) → `gracias.html` (botón al grupo de WhatsApp)**.
+
+El formulario usa **Formspree** (gratis) para guardar los datos y redirigir automáticamente — no hace falta backend propio. Pasos para dejarlo funcionando (5 minutos):
+
+1. Entrá a **https://formspree.io** y create una cuenta gratis
+2. Creá un formulario nuevo (botón "New Form"), ponele un nombre (ej: "Registro clase gratuita")
+3. Formspree te da un ID de formulario, algo como `f/xayzabcd`. Copiá esa URL completa
+4. En `registro.html`, buscá esta línea y pegá tu URL real:
+   ```html
+   <form id="form-registro" action="https://formspree.io/f/TU_FORM_ID" method="POST">
+   ```
+5. En la misma sección, buscá el campo `_redirect` y poné la URL real de `gracias.html` una vez que esté publicada (ej: `https://tuusuario.github.io/ia-para-emprender/gracias.html`):
+   ```html
+   <input type="hidden" name="_redirect" value="https://TU-DOMINIO/gracias.html">
+   ```
+6. En `gracias.html`, reemplazá el link de invitación al grupo de WhatsApp (`TU-LINK-DE-INVITACION`) por el real — lo generás desde WhatsApp al crear tu Comunidad o Grupo (ver instrucciones más abajo en esta conversación / o en el chat donde armamos esto)
+
+**Dónde ver las inscripciones:** entrás a tu cuenta de Formspree → tu formulario → pestaña "Submissions". Ahí tenés la lista de nombre + mail de todos los que se anotaron, exportable a CSV.
+
+**Nota sobre el plan gratuito de Formspree:** el free tier tiene un límite de envíos por mes (alcanza de sobra para lanzar y probar). Si tu lista crece mucho, revisá los planes pagos en su web.
+
+
+
 ## Estructura
 
 ```
-index.html                    → versión estática (HTML + CSS + JS en un solo archivo)
-IAParaEmprenderLanding.tsx    → versión React/Next.js (mismo diseño, con estado)
+index.html                    → landing principal de venta (estática)
+IAParaEmprenderLanding.tsx    → landing principal en React/Next.js
+registro.html                 → formulario de registro (nombre + mail) para la clase gratuita
+gracias.html                  → página "solo falta 1 paso", con el botón al grupo de WhatsApp
 README.md                     → este archivo
 ```
 
