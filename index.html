@@ -77,6 +77,12 @@
     letter-spacing: 0.01em;
   }
   .logo span{ color: var(--teal); }
+  .nav-right{ display:flex; align-items:center; gap:18px; }
+  .nav-link{
+    font-family: var(--mono); font-size:0.8rem; color: var(--paper-dim);
+    white-space:nowrap;
+  }
+  .nav-link:hover{ color: var(--teal); }
   .nav-cta{
     background: var(--teal);
     color: #06201A;
@@ -140,6 +146,18 @@
     box-shadow: 0 0 0 rgba(240,180,41,0);
   }
   .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 10px 30px -8px rgba(240,180,41,0.5); }
+  .btn-secondary{
+    background: transparent;
+    color: var(--teal);
+    font-weight:600;
+    padding: 15px 26px;
+    border-radius: 10px;
+    border: 1px solid var(--teal-dim);
+    font-size: 0.95rem;
+    display:inline-flex; align-items:center; gap:8px;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .btn-secondary:hover{ border-color: var(--teal); background: rgba(47,224,184,0.06); }
   .hero-meta{
     font-family: var(--mono);
     font-size: 0.82rem;
@@ -401,6 +419,10 @@
     .path-track{ left: 19px; }
   }
 
+  @media (max-width: 480px){
+    .nav-link{ display:none; }
+  }
+
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; animation:none !important; }
   }
@@ -413,7 +435,10 @@
 <header>
   <div class="nav">
     <div class="logo">IA para <span>Emprender</span></div>
-    <a class="nav-cta" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">Quiero anotarme →</a>
+    <div class="nav-right">
+      <a class="nav-link" href="registro.html">Clase gratis</a>
+      <a class="nav-cta" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">Quiero anotarme →</a>
+    </div>
   </div>
 </header>
 
@@ -425,6 +450,9 @@
     <div class="hero-actions">
       <a class="btn-primary" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">
         Reservar mi lugar por WhatsApp
+      </a>
+      <a class="btn-secondary" href="registro.html">
+        🎁 Ver la clase gratuita primero
       </a>
       <span class="hero-meta">Cupos limitados por grupo</span>
     </div>

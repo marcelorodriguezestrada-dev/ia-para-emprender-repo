@@ -225,6 +225,20 @@ export default function IAParaEmprenderLanding() {
         .landing .logo span {
           color: var(--teal);
         }
+        .landing .nav-right {
+          display: flex;
+          align-items: center;
+          gap: 18px;
+        }
+        .landing .nav-link {
+          font-family: var(--mono);
+          font-size: 0.8rem;
+          color: var(--paper-dim);
+          white-space: nowrap;
+        }
+        .landing .nav-link:hover {
+          color: var(--teal);
+        }
         .landing .nav-cta {
           background: var(--teal);
           color: #06201a;
@@ -301,6 +315,23 @@ export default function IAParaEmprenderLanding() {
         .landing .btn-primary:hover {
           transform: translateY(-2px);
           box-shadow: 0 10px 30px -8px rgba(240, 180, 41, 0.5);
+        }
+        .landing .btn-secondary {
+          background: transparent;
+          color: var(--teal);
+          font-weight: 600;
+          padding: 15px 26px;
+          border-radius: 10px;
+          border: 1px solid var(--teal-dim);
+          font-size: 0.95rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .landing .btn-secondary:hover {
+          border-color: var(--teal);
+          background: rgba(47, 224, 184, 0.06);
         }
         .landing .hero-meta {
           font-family: var(--mono);
@@ -795,6 +826,12 @@ export default function IAParaEmprenderLanding() {
           }
         }
 
+        @media (max-width: 480px) {
+          .landing .nav-link {
+            display: none;
+          }
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .landing * {
             transition: none !important;
@@ -812,9 +849,14 @@ export default function IAParaEmprenderLanding() {
           <div className="logo">
             IA para <span>Emprender</span>
           </div>
-          <a className="nav-cta" href={ctaTopHref} target="_blank" rel="noopener noreferrer">
-            Quiero anotarme →
-          </a>
+          <div className="nav-right">
+            <a className="nav-link" href="registro.html">
+              Clase gratis
+            </a>
+            <a className="nav-cta" href={ctaTopHref} target="_blank" rel="noopener noreferrer">
+              Quiero anotarme →
+            </a>
+          </div>
         </div>
       </header>
 
@@ -833,6 +875,9 @@ export default function IAParaEmprenderLanding() {
           <div className="hero-actions">
             <a className="btn-primary" href={ctaTopHref} target="_blank" rel="noopener noreferrer">
               Reservar mi lugar por WhatsApp
+            </a>
+            <a className="btn-secondary" href="registro.html">
+              🎁 Ver la clase gratuita primero
             </a>
             <span className="hero-meta">Cupos limitados por grupo</span>
           </div>
