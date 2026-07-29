@@ -96,3 +96,4 @@ Si tu proyecto usa Vite/CRA en vez de Next.js, funciona igual — `styled-jsx` n
 - Clase 1 gratis (masterclass) como puerta de entrada, con CTA propio hacia esta landing
 - Testimonios reales después de la primera cohorte
 - Curso 2 ("De la Idea al Negocio", con validación de idea + blockchain) como upsell para quien termine este
+# ia-para-emprender-repo
