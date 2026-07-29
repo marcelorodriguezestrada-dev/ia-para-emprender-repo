@@ -985,22 +985,26 @@ export default function IAParaEmprenderLanding() {
             <div className="instr-card">
               <div className="avatar">D</div>
               <div>
-                <h4>Daniel [Apellido]</h4>
-                <span className="instr-role">Profesor</span>
+                <h4>Daniel Camacho</h4>
+                <span className="instr-role">Profesor · 🇧🇴 La Paz, Bolivia</span>
                 <p>
-                  Acá va una bio corta de Daniel: qué hizo, con qué negocios trabajó, por qué sabe de esto. 2-3
-                  líneas alcanzan.
+                  Ingeniero de Sistemas con más de 18 años de experiencia en datos, Business Intelligence y
+                  seguridad de la información. Docente universitario y expositor del seminario "Criptomonedas y
+                  Tokenización" — el que te va a mostrar en qué casos blockchain realmente le suma a un negocio,
+                  y en cuáles no.
                 </p>
-                <span className="edit-note">← editar con la bio real de Daniel</span>
               </div>
             </div>
             <div className="instr-card">
-              <div className="avatar">T</div>
+              <div className="avatar">M</div>
               <div>
-                <h4>Tu nombre</h4>
-                <span className="instr-role">Profesor</span>
-                <p>Acá va tu bio corta: qué construiste, qué proyectos armaste con IA, por qué das este curso.</p>
-                <span className="edit-note">← editar con tu bio real</span>
+                <h4>Marcelo Rodríguez Estrada</h4>
+                <span className="instr-role">Profesor · 🇦🇷 Buenos Aires, Argentina</span>
+                <p>
+                  Ingeniero de Datos Senior con más de 15 años de experiencia trabajando con equipos como
+                  Mercado Libre, y doble maestría en Data Mining (UBA) y Finanzas (UTDT). Construyó con sus
+                  propias manos las herramientas de IA que vas a usar en este curso.
+                </p>
               </div>
             </div>
           </div>
@@ -1013,7 +1017,7 @@ export default function IAParaEmprenderLanding() {
             <div className="price-left">
               <h3>IA para Emprender</h3>
               <p>
-                7 clases en vivo con Daniel y [tu nombre]. Grupo reducido para que cada uno salga con su
+                7 clases en vivo con Daniel Camacho y Marcelo Rodríguez Estrada. Grupo reducido para que cada uno salga con su
                 contenido, su producto, su página de venta y su plan de rentabilidad hechos, no solo con la
                 teoría.
               </p>
@@ -1085,7 +1089,7 @@ export default function IAParaEmprenderLanding() {
       <footer>
         <div className="wrap" style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
           <span>IA PARA EMPRENDER — 2026</span>
-          <span>Dictado por Daniel &amp; [Tu nombre]</span>
+          <span>Dictado por Daniel Camacho &amp; Marcelo Rodríguez Estrada</span>
         </div>
       </footer>
 
