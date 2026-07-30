@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root {
+  --bg: #0a0f0f;
+  --panel: #121c1c;
+  --line: #223030;
+  --teal: #2fe0b8;
+  --teal-dim: #1c8a70;
+  --gold: #f0b429;
+  --paper: #edf3f1;
+  --paper-dim: #a9b8b5;
+}
+
+body {
+  background: var(--bg);
+  color: var(--paper);
+  font-family: "Inter", sans-serif;
+}

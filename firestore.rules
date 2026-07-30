@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Posts generados: solo lectura/escritura para usuarios logueados
+    // (vos y Daniel, ya filtrados por la lista blanca en el código).
+    match /posts_generados/{docId} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Leads del formulario de /registro: cualquiera puede CREAR uno (es
+    // público, sin login), pero solo un admin logueado puede leerlos —
+    // así nadie puede scrapear la lista de mails de otra gente.
+    match /leads/{docId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Campañas UTM: la creación y el borrado son solo para admins logueados,
+    // pero el conteo de clics (/go/[id]) lo dispara cualquier visitante
+    // ANÓNIMO que hace clic en el link — por eso "update" tiene que estar
+    // permitido sin auth, pero restringido a tocar solo el campo "clics".
+    match /campanas_utm/{docId} {
+      allow read: if true;
+      allow create, delete: if request.auth != null;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(["clics"]);
+    }
+  }
+}
