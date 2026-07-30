@@ -644,8 +644,8 @@
           <button type="button" class="ctoggle active" data-country="ar" onclick="setCountry('ar')">🇦🇷 Argentina</button>
           <button type="button" class="ctoggle" data-country="bo" onclick="setCountry('bo')">🇧🇴 Bolivia</button>
         </div>
-        <div class="price-tag"><span id="price-symbol">$</span><span id="price-value">XX.XXX</span></div>
-        <div class="price-note" id="price-note">pago único · ARS · ← reemplazar por tu precio real</div>
+        <div class="price-tag"><span id="price-symbol">$</span><span id="price-value">39.900</span></div>
+        <div class="price-note" id="price-note">pago único · ARS · precio de lanzamiento</div>
         <a class="btn-block" id="price-cta" href="https://wa.me/5491100000000?text=Hola!%20quiero%20anotarme%20en%20IA%20para%20Emprender" target="_blank" rel="noopener">Anotarme por WhatsApp</a>
       </div>
     </div>
@@ -704,8 +704,8 @@ const CONFIG = {
     bo: "59100000000",     // WhatsApp para Bolivia (puede ser el mismo número)
   },
   precios: {
-    ar: { simbolo: "$",  valor: "XX.XXX", moneda: "ARS" },
-    bo: { simbolo: "Bs", valor: "XXX",    moneda: "BOB" },
+    ar: { simbolo: "$",  valor: "39.900", moneda: "ARS" },
+    bo: { simbolo: "Bs", valor: "189",    moneda: "BOB" },
   },
   mensajeWhatsapp: "Hola! quiero anotarme en IA para Emprender",
   // Fecha y hora en que ABRE la inscripción (fin de los 3 días de difusión).
@@ -742,7 +742,7 @@ function setCountry(pais){
   document.getElementById('price-symbol').textContent = precio.simbolo;
   document.getElementById('price-value').textContent = precio.valor;
   document.getElementById('price-note').textContent =
-    `pago único · ${precio.moneda} · ← reemplazar por tu precio real`;
+    `pago único · ${precio.moneda} · precio de lanzamiento`;
 
   const numero = CONFIG.whatsapp[pais];
   const texto = encodeURIComponent(CONFIG.mensajeWhatsapp);

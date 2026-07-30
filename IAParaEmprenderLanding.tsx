@@ -13,8 +13,8 @@ const CONFIG = {
     bo: "59100000000", // WhatsApp para Bolivia (puede ser el mismo número)
   },
   precios: {
-    ar: { simbolo: "$", valor: "XX.XXX", moneda: "ARS" },
-    bo: { simbolo: "Bs", valor: "XXX", moneda: "BOB" },
+    ar: { simbolo: "$", valor: "39.900", moneda: "ARS" },
+    bo: { simbolo: "Bs", valor: "189", moneda: "BOB" },
   },
   mensajeWhatsapp: "Hola! quiero anotarme en IA para Emprender",
   // Fecha y hora en que ABRE la inscripción (fin de los 3 días de difusión).
@@ -1049,7 +1049,7 @@ export default function IAParaEmprenderLanding() {
                 {precio.simbolo}
                 {precio.valor}
               </div>
-              <div className="price-note">pago único · {precio.moneda} · ← reemplazar por tu precio real</div>
+              <div className="price-note">pago único · {precio.moneda} · precio de lanzamiento</div>
               <a className="btn-block" href={ctaPrecioHref} target="_blank" rel="noopener noreferrer">
                 Anotarme por WhatsApp
               </a>
