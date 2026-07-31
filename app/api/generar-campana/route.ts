@@ -12,15 +12,7 @@ const REDES: Record<string, string> = {
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const {
-    red,
-    objetivo,
-    tono,
-    cantPosts,
-    oferta,
-    destinoLabel,
-    baseUrlConUtm, // ej: "https://tu-dominio.com/registro?utm_source=instagram&utm_medium=post&utm_campaign=clase-gratis"
-  } = body;
+  const { red, objetivo, tono, cantPosts, oferta, destinoLabel } = body;
 
   if (!process.env.GROQ_API_KEY) {
     return NextResponse.json({ error: "Falta configurar GROQ_API_KEY en el servidor" }, { status: 500 });
@@ -31,11 +23,15 @@ export async function POST(request: Request) {
 
   const redLabel = REDES[red];
   const n = Math.min(Math.max(Number(cantPosts) || 5, 3), 10);
+  const esRedDeBio = red === "instagram" || red === "tiktok";
 
-  const reglaLink =
-    red === "instagram" || red === "tiktok"
-      ? `- El campo "texto" DEBE terminar con "👆 Link en bio" (NUNCA escribas la URL completa dentro del texto, en ${redLabel} no se puede hacer clic en links dentro del posteo).`
-      : `- El campo "texto" DEBE terminar con el link completo: "👉 ${baseUrlConUtm}"`;
+  // OJO: acá NO ponemos todavía el link real. Cada post recién tiene su
+  // link corto (con seguimiento de clics) DESPUÉS de esta llamada a Groq.
+  // Por eso le pedimos a la IA que deje un placeholder exacto, que
+  // reemplazamos por el link real en el frontend antes de mostrar el post.
+  const reglaLink = esRedDeBio
+    ? `- El campo "texto" DEBE terminar con "👆 Link en bio" (NUNCA escribas una URL dentro del texto, en ${redLabel} no se puede hacer clic en links dentro del posteo).`
+    : `- El campo "texto" DEBE terminar EXACTAMENTE con el texto "👉 {{LINK}}" (así, literal, con esas llaves dobles — es un marcador que reemplazamos después por el link real. NO inventes ninguna URL vos.)`;
 
   const prompt = `Creá una campaña de ${n} posts para ${redLabel} promocionando "IA para Emprender", un curso de 7 clases en vivo que enseña a emprendedores sin conocimientos técnicos a usar inteligencia artificial para crear contenido, automatizar WhatsApp/redes, vender productos digitales, armar páginas de venta y conseguir clientes.
 

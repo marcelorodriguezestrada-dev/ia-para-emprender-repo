@@ -128,45 +128,54 @@ export default function CampanasPage() {
     setGuardado(false);
 
     const slugCampana = slugify(`${objetivo}-${red}-${Date.now().toString().slice(-4)}`);
-    const baseUrlConUtm = `${origin}${destino.url}?utm_source=${red}&utm_medium=post&utm_campaign=${slugCampana}`;
+    const esRedDeBio = red === "instagram" || red === "tiktok";
 
     try {
       const res = await fetch("/api/generar-campana", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          red,
-          objetivo,
-          tono,
-          cantPosts,
-          oferta,
-          destinoLabel: destino.label,
-          baseUrlConUtm,
-        }),
+        body: JSON.stringify({ red, objetivo, tono, cantPosts, oferta, destinoLabel: destino.label }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error desconocido");
-      setCampana(data);
 
-      // Por cada post, creamos un link corto real (con conteo de clics) en vez
-      // de solo un link UTM estático — así el historial de campañas UTM que
-      // ya tenés también se llena con esto.
-      const links = [];
-      for (let i = 0; i < (data.posts?.length ?? 0); i++) {
-        const nueva = await crearCampana({
-          nombre: `${data.titulo_campana} — Post ${i + 1} (${red})`,
+      const links: { label: string; url: string; campanaUtmId: string }[] = [];
+
+      if (esRedDeBio) {
+        // Instagram/TikTok: un único link de bio para toda la campaña
+        // (no se puede clickear un link distinto en cada post).
+        const bioLink = await crearCampana({
+          nombre: `${data.titulo_campana} — Link de bio (${red})`,
           urlDestino: destino.url,
           utmSource: red,
-          utmMedium: "post",
+          utmMedium: "bio",
           utmCampaign: slugCampana,
-          utmContent: `post-${i + 1}`,
         });
-        links.push({
-          label: `Post ${i + 1}`,
-          url: `${origin}/go/${nueva.id}`,
-          campanaUtmId: nueva.id,
-        });
+        links.push({ label: "Link de bio", url: `${origin}/go/${bioLink.id}`, campanaUtmId: bioLink.id });
+        // Los posts ya vienen con "👆 Link en bio" en el texto, no hace falta tocar nada.
+      } else {
+        // Facebook/WhatsApp: un link por post, y lo insertamos DENTRO del
+        // texto reemplazando el placeholder {{LINK}} — así el post queda
+        // 100% listo para copiar y pegar tal cual, con el link ya adentro.
+        for (let i = 0; i < (data.posts?.length ?? 0); i++) {
+          const nueva = await crearCampana({
+            nombre: `${data.titulo_campana} — Post ${i + 1} (${red})`,
+            urlDestino: destino.url,
+            utmSource: red,
+            utmMedium: "post",
+            utmCampaign: slugCampana,
+            utmContent: `post-${i + 1}`,
+          });
+          const url = `${origin}/go/${nueva.id}`;
+          links.push({ label: `Post ${i + 1}`, url, campanaUtmId: nueva.id });
+
+          if (data.posts?.[i]?.texto) {
+            data.posts[i].texto = data.posts[i].texto.replace("{{LINK}}", url);
+          }
+        }
       }
+
+      setCampana(data);
       setLinksConSeguimiento(links);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo generar la campaña");
@@ -407,16 +416,17 @@ export default function CampanasPage() {
           {linksConSeguimiento.length > 0 && (
             <div className="bg-[var(--panel)] border border-[var(--line)] rounded-xl p-5">
               <h3 className="text-sm font-mono uppercase tracking-wide text-[var(--gold)] mb-3">
-                🔗 Links con seguimiento (uno por post)
+                🔗 {red === "instagram" || red === "tiktok" ? "Link de bio" : "Links de seguimiento (uno por post)"}
               </h3>
               <p className="text-xs text-[var(--paper-dim)] mb-3">
-                Compartí estos links en cada post — cada clic queda contado. Los vas a poder ver también en la
-                pestaña "Links UTM".
+                {red === "instagram" || red === "tiktok"
+                  ? "Pegá este único link en tu bio — cada post ya dice \"link en bio\", y acá abajo ves cuántos clics trajo en total."
+                  : "Cada post de arriba ya tiene su link insertado en el texto — copialo y pegalo tal cual. Estos links son los mismos, por si los necesitás sueltos."}
               </p>
               <div className="space-y-2">
                 {linksConSeguimiento.map((l) => (
                   <div key={l.campanaUtmId} className="flex items-center gap-2">
-                    <span className="text-xs text-[var(--paper-dim)] w-16 flex-shrink-0">{l.label}</span>
+                    <span className="text-xs text-[var(--paper-dim)] w-20 flex-shrink-0">{l.label}</span>
                     <code className="flex-1 text-xs bg-[var(--bg)] border border-[var(--line)] rounded px-3 py-2 truncate">
                       {l.url}
                     </code>
