@@ -8,6 +8,12 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
+    // Campañas completas generadas por IA (varios posts + calendario):
+    // mismo criterio que posts_generados, solo para admins logueados.
+    match /campanas_generadas/{docId} {
+      allow read, write: if request.auth != null;
+    }
+
     // Leads del formulario de /registro: cualquiera puede CREAR uno (es
     // público, sin login), pero solo un admin logueado puede leerlos —
     // así nadie puede scrapear la lista de mails de otra gente.

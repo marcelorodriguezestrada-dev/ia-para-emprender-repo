@@ -8,7 +8,8 @@ import { esAdminAutorizado } from "@/lib/auth";
 import Link from "next/link";
 
 const TABS = [
-  { href: "/admin", label: "Posts" },
+  { href: "/admin/campanas", label: "Campañas IA" },
+  { href: "/admin", label: "Post rápido" },
   { href: "/admin/utm", label: "Links UTM" },
 ];
 
