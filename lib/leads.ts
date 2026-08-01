@@ -18,8 +18,15 @@ export interface Lead extends NuevoLead {
 }
 
 export async function guardarLead(datos: NuevoLead): Promise<void> {
+  // Firestore rechaza el documento entero si algún campo es `undefined`
+  // (pasa cuando alguien entra a /registro sin parámetros utm_*). Filtramos
+  // esos campos antes de guardar, en vez de mandarlos como undefined.
+  const datosLimpios = Object.fromEntries(
+    Object.entries(datos).filter(([, valor]) => valor !== undefined)
+  );
+
   await addDoc(collection(db, COLECCION), {
-    ...datos,
+    ...datosLimpios,
     created_at: serverTimestamp(),
   });
 }

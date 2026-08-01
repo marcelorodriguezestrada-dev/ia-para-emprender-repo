@@ -46,8 +46,14 @@ export function construirUrlConUtm(datos: NuevaCampana, base?: string): string {
 }
 
 export async function crearCampana(datos: NuevaCampana): Promise<Campana> {
+  // Mismo problema que en leads: Firestore rechaza el documento si
+  // "utmContent" viene undefined (pasa en los links de "bio", que no lo usan).
+  const datosLimpios = Object.fromEntries(
+    Object.entries(datos).filter(([, valor]) => valor !== undefined)
+  );
+
   const ref = await addDoc(collection(db, COLECCION), {
-    ...datos,
+    ...datosLimpios,
     clics: 0,
     created_at: serverTimestamp(),
   });
