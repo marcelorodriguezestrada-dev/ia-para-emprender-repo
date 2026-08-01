@@ -1,0 +1,231 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
+import { listarLeads, type Lead } from "@/lib/leads";
+
+const PLANTILLA_DEFAULT_ASUNTO = "Tu clase gratuita de IA para Emprender 🎓";
+const PLANTILLA_DEFAULT_CUERPO = `<p>Hola {{nombre}},</p>
+<p>¡Confirmado! Ya tenés tu lugar reservado en la clase gratuita de <b>IA para Emprender</b>.</p>
+<p>
+  📅 Fecha: {{fecha}}<br/>
+  🕐 Hora: {{hora}}<br/>
+  🔗 Link de acceso: <a href="{{link}}">{{link}}</a>
+</p>
+<p>Te esperamos ahí. Cualquier duda, respondé este mail.</p>
+<p>— IA para Emprender</p>`;
+
+export default function MailPage() {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [seleccionados, setSeleccionados] = useState<Set<string>>(new Set());
+
+  const [asunto, setAsunto] = useState(PLANTILLA_DEFAULT_ASUNTO);
+  const [cuerpo, setCuerpo] = useState(PLANTILLA_DEFAULT_CUERPO);
+  const [fecha, setFecha] = useState("");
+  const [hora, setHora] = useState("");
+  const [link, setLink] = useState("");
+
+  const [enviando, setEnviando] = useState(false);
+  const [resultado, setResultado] = useState<{ enviados: number; fallidos: number } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    cargar();
+  }, []);
+
+  async function cargar() {
+    setCargando(true);
+    try {
+      const data = await listarLeads();
+      setLeads(data);
+      setSeleccionados(new Set(data.map((l) => l.id))); // todos seleccionados por default
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  function toggleUno(id: string) {
+    setSeleccionados((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleTodos() {
+    setSeleccionados((prev) => (prev.size === leads.length ? new Set() : new Set(leads.map((l) => l.id))));
+  }
+
+  async function handleEnviar() {
+    setError(null);
+    setResultado(null);
+
+    const destinatarios = leads
+      .filter((l) => seleccionados.has(l.id))
+      .map((l) => ({ email: l.email, nombre: l.nombre }));
+
+    if (destinatarios.length === 0) {
+      setError("Seleccioná al menos un inscripto.");
+      return;
+    }
+
+    setEnviando(true);
+    try {
+      const res = await fetch("/api/enviar-mail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          destinatarios,
+          asunto,
+          cuerpoHtml: cuerpo,
+          variablesExtra: { fecha, hora, link },
+          solicitanteEmail: auth.currentUser?.email,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Error desconocido");
+
+      const enviados = data.resultados.filter((r: { ok: boolean }) => r.ok).length;
+      const fallidos = data.resultados.length - enviados;
+      setResultado({ enviados, fallidos });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo enviar el mail");
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  return (
+    <div className="space-y-10">
+      <section>
+        <h1 className="text-xl font-bold mb-1" style={{ fontFamily: "Unbounded, sans-serif" }}>
+          Enviar mail a inscriptos
+        </h1>
+        <p className="text-[var(--paper-dim)] text-sm mb-6">
+          {cargando ? "Cargando..." : `${leads.length} personas registradas en total.`}
+        </p>
+
+        {!cargando && leads.length === 0 && (
+          <p className="text-[var(--paper-dim)] text-sm">Todavía no hay nadie registrado en /registro.</p>
+        )}
+
+        {!cargando && leads.length > 0 && (
+          <div className="bg-[var(--panel)] border border-[var(--line)] rounded-xl overflow-hidden">
+            <div className="flex items-center gap-3 px-4 py-3 bg-[var(--bg)] border-b border-[var(--line)]">
+              <input
+                type="checkbox"
+                checked={seleccionados.size === leads.length}
+                onChange={toggleTodos}
+                className="w-4 h-4"
+              />
+              <span className="text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)]">
+                {seleccionados.size} de {leads.length} seleccionados
+              </span>
+            </div>
+            <div className="max-h-64 overflow-y-auto">
+              {leads.map((lead) => (
+                <label
+                  key={lead.id}
+                  className="flex items-center gap-3 px-4 py-2.5 border-b border-[var(--line)] last:border-none text-sm cursor-pointer hover:bg-[var(--bg)]"
+                >
+                  <input
+                    type="checkbox"
+                    checked={seleccionados.has(lead.id)}
+                    onChange={() => toggleUno(lead.id)}
+                    className="w-4 h-4"
+                  />
+                  <span className="flex-1">{lead.nombre}</span>
+                  <span className="text-[var(--paper-dim)] text-xs">{lead.email}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "Unbounded, sans-serif" }}>
+          Datos de la clase
+        </h2>
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+              Fecha
+            </label>
+            <input
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              placeholder="Sábado 8 de agosto"
+              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+              Hora
+            </label>
+            <input
+              value={hora}
+              onChange={(e) => setHora(e.target.value)}
+              placeholder="19:00 (Arg)"
+              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+              Link de acceso
+            </label>
+            <input
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              placeholder="https://meet.google.com/..."
+              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+            />
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+            Asunto
+          </label>
+          <input
+            value={asunto}
+            onChange={(e) => setAsunto(e.target.value)}
+            className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--teal)]"
+          />
+        </div>
+
+        <div className="mb-2">
+          <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+            Cuerpo del mail (HTML) — usá {"{{nombre}}"}, {"{{fecha}}"}, {"{{hora}}"}, {"{{link}}"}
+          </label>
+          <textarea
+            value={cuerpo}
+            onChange={(e) => setCuerpo(e.target.value)}
+            rows={10}
+            className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-4 py-3 text-sm font-mono focus:outline-none focus:border-[var(--teal)]"
+          />
+        </div>
+
+        <button
+          onClick={handleEnviar}
+          disabled={enviando || seleccionados.size === 0}
+          className="w-full bg-[var(--gold)] text-[#201502] font-bold py-3 rounded-lg disabled:opacity-50 mt-4"
+        >
+          {enviando ? "Enviando..." : `✉️ Enviar a ${seleccionados.size} ${seleccionados.size === 1 ? "persona" : "personas"}`}
+        </button>
+
+        {error && <p className="text-red-400 text-xs mt-3">{error}</p>}
+        {resultado && (
+          <p className="text-sm mt-3">
+            <span className="text-green-400">{resultado.enviados} enviados</span>
+            {resultado.fallidos > 0 && <span className="text-red-400"> · {resultado.fallidos} fallidos</span>}
+          </p>
+        )}
+      </section>
+    </div>
+  );
+}
