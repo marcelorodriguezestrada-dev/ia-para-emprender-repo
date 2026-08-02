@@ -22,9 +22,23 @@ export default function MailPage() {
 
   const [asunto, setAsunto] = useState(PLANTILLA_DEFAULT_ASUNTO);
   const [cuerpo, setCuerpo] = useState(PLANTILLA_DEFAULT_CUERPO);
-  const [fecha, setFecha] = useState("");
-  const [hora, setHora] = useState("");
+  const [fechaISO, setFechaISO] = useState(""); // ej: "2026-08-08", lo que da <input type="date">
+  const [horaISO, setHoraISO] = useState(""); // ej: "19:00", lo que da <input type="time">
   const [link, setLink] = useState("");
+
+  // Convierte "2026-08-08" en "sábado, 8 de agosto" para que el mail se lea
+  // natural, aunque la persona haya elegido la fecha con el selector.
+  const fechaFormateada = fechaISO
+    ? (() => {
+        const texto = new Date(`${fechaISO}T00:00:00`).toLocaleDateString("es-AR", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+        return texto.charAt(0).toUpperCase() + texto.slice(1);
+      })()
+    : "";
+  const horaFormateada = horaISO ? `${horaISO} hs (Argentina)` : "";
 
   const [enviando, setEnviando] = useState(false);
   const [resultado, setResultado] = useState<{ enviados: number; fallidos: number } | null>(null);
@@ -82,7 +96,7 @@ export default function MailPage() {
           destinatarios,
           asunto,
           cuerpoHtml: cuerpo,
-          variablesExtra: { fecha, hora, link },
+          variablesExtra: { fecha: fechaFormateada, hora: horaFormateada, link },
           solicitanteEmail: auth.currentUser?.email,
         }),
       });
@@ -157,22 +171,26 @@ export default function MailPage() {
               Fecha
             </label>
             <input
-              value={fecha}
-              onChange={(e) => setFecha(e.target.value)}
-              placeholder="Sábado 8 de agosto"
-              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+              type="date"
+              value={fechaISO}
+              onChange={(e) => setFechaISO(e.target.value)}
+              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)] [color-scheme:dark]"
             />
+            {fechaFormateada && (
+              <p className="text-xs text-[var(--teal)] mt-1.5">Se va a ver así: {fechaFormateada}</p>
+            )}
           </div>
           <div>
             <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
               Hora
             </label>
             <input
-              value={hora}
-              onChange={(e) => setHora(e.target.value)}
-              placeholder="19:00 (Arg)"
-              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+              type="time"
+              value={horaISO}
+              onChange={(e) => setHoraISO(e.target.value)}
+              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)] [color-scheme:dark]"
             />
+            {horaFormateada && <p className="text-xs text-[var(--teal)] mt-1.5">Se va a ver así: {horaFormateada}</p>}
           </div>
           <div>
             <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
