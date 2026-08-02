@@ -1,6 +1,17 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// OJO: NO instanciamos Resend acá arriba (a nivel de módulo). Next.js
+// importa este archivo durante el build para analizar las rutas, y si en
+// ese momento RESEND_API_KEY no existe todavía, el constructor de Resend
+// explota y tira abajo el build entero — aunque el mail nunca se llegue a
+// enviar de verdad en esa etapa. Por eso lo creamos recién adentro de la
+// función, cuando se ejecuta una request real.
+function getResendClient(): Resend {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("Falta configurar RESEND_API_KEY en el servidor");
+  }
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 // El remitente tiene que ser de un dominio que vos verificaste en Resend
 // (ver README) — no puede ser un mail de Gmail suelto ni un subdominio de
@@ -28,9 +39,8 @@ export async function enviarMailMasivo(
   cuerpoHtmlPlantilla: string,
   variablesExtra: Record<string, string> = {}
 ): Promise<ResultadoEnvio[]> {
-  if (!process.env.RESEND_API_KEY) {
-    throw new Error("Falta configurar RESEND_API_KEY en el servidor");
-  }
+  const resend = getResendClient();
+
   if (destinatarios.length === 0) {
     throw new Error("No hay destinatarios seleccionados");
   }
