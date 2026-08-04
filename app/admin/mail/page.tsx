@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
-import { listarLeads, type Lead } from "@/lib/leads";
+import { listarLeads, guardarLead, type Lead } from "@/lib/leads";
 
 const PLANTILLA_DEFAULT_ASUNTO = "Tu clase gratuita de IA para Emprender 🎓";
 const PLANTILLA_DEFAULT_CUERPO = `<p>Hola {{nombre}},</p>
@@ -44,6 +44,14 @@ export default function MailPage() {
   const [resultado, setResultado] = useState<{ enviados: number; fallidos: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Para cargar a mano a la gente que te escribe directo por WhatsApp,
+  // en vez de completar el formulario de /registro.
+  const [mostrarFormManual, setMostrarFormManual] = useState(false);
+  const [nombreManual, setNombreManual] = useState("");
+  const [emailManual, setEmailManual] = useState("");
+  const [agregandoManual, setAgregandoManual] = useState(false);
+  const [errorManual, setErrorManual] = useState<string | null>(null);
+
   useEffect(() => {
     cargar();
   }, []);
@@ -72,6 +80,32 @@ export default function MailPage() {
 
   function toggleTodos() {
     setSeleccionados((prev) => (prev.size === leads.length ? new Set() : new Set(leads.map((l) => l.id))));
+  }
+
+  async function handleAgregarManual() {
+    setErrorManual(null);
+    if (!nombreManual.trim() || !emailManual.trim()) {
+      setErrorManual("Completá nombre y mail.");
+      return;
+    }
+    setAgregandoManual(true);
+    try {
+      await guardarLead({
+        nombre: nombreManual.trim(),
+        email: emailManual.trim(),
+        utmSource: "whatsapp",
+        utmMedium: "manual",
+      });
+      setNombreManual("");
+      setEmailManual("");
+      setMostrarFormManual(false);
+      await cargar();
+    } catch (err) {
+      console.error(err);
+      setErrorManual("No se pudo agregar. Probá de nuevo.");
+    } finally {
+      setAgregandoManual(false);
+    }
   }
 
   async function handleEnviar() {
@@ -122,6 +156,54 @@ export default function MailPage() {
         <p className="text-[var(--paper-dim)] text-sm mb-6">
           {cargando ? "Cargando..." : `${leads.length} personas registradas en total.`}
         </p>
+
+        <div className="mb-4">
+          {!mostrarFormManual ? (
+            <button
+              onClick={() => setMostrarFormManual(true)}
+              className="text-xs font-mono border border-[var(--line)] text-[var(--paper-dim)] px-4 py-2 rounded-lg hover:border-[var(--teal)] hover:text-[var(--teal)]"
+            >
+              💬 Agregar alguien que te escribió por WhatsApp
+            </button>
+          ) : (
+            <div className="bg-[var(--panel)] border border-[var(--line)] rounded-xl p-4 space-y-3">
+              <p className="text-xs text-[var(--paper-dim)]">
+                Para cuando alguien te pide anotarse directo por WhatsApp, sin pasar por el formulario.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  value={nombreManual}
+                  onChange={(e) => setNombreManual(e.target.value)}
+                  placeholder="Nombre"
+                  className="bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+                />
+                <input
+                  value={emailManual}
+                  onChange={(e) => setEmailManual(e.target.value)}
+                  placeholder="Mail"
+                  type="email"
+                  className="bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+                />
+              </div>
+              {errorManual && <p className="text-red-400 text-xs">{errorManual}</p>}
+              <div className="flex gap-2">
+                <button
+                  onClick={handleAgregarManual}
+                  disabled={agregandoManual}
+                  className="text-xs font-mono bg-[var(--teal)] text-[#06201A] font-semibold px-4 py-2 rounded-lg disabled:opacity-50"
+                >
+                  {agregandoManual ? "Agregando..." : "Agregar a la lista"}
+                </button>
+                <button
+                  onClick={() => setMostrarFormManual(false)}
+                  className="text-xs font-mono text-[var(--paper-dim)] px-4 py-2"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {!cargando && leads.length === 0 && (
           <p className="text-[var(--paper-dim)] text-sm">Todavía no hay nadie registrado en /registro.</p>
