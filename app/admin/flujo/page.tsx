@@ -106,7 +106,7 @@ export default function FlujoPage() {
           </Mensaje>
         </Paso>
 
-        <Paso n={6} titulo="Al cerrar la clase (mensaje en el grupo, con la oferta)">
+        <Paso n={6} titulo="Al cerrar la clase (mensaje en el grupo + mail con la oferta)">
           <Mensaje etiqueta="Mandás al grupo">
             ¡Gracias por venir! 🙌 Si te quedaste con ganas de más, esto es lo que sigue:
             {"\n\n"}
@@ -118,7 +118,28 @@ export default function FlujoPage() {
             Cupo limitado porque es grupo reducido, no por apurarlos. Cualquier duda, este grupo sigue
             abierto.
           </Mensaje>
+          <p>
+            👉 Además del WhatsApp, mandás el mismo mensaje por mail: <b>Mail a inscriptos</b> → arriba
+            elegís la plantilla <b>"🚀 Oferta de los cursos (después)"</b>, completás los 2 links, y
+            enviás a todos.
+          </p>
         </Paso>
+      </section>
+
+      <section>
+        <h2 className="text-sm font-mono uppercase tracking-wide text-[var(--teal)] mb-5">
+          D. Las 2 plantillas de mail que tenés disponibles
+        </h2>
+        <div className="bg-[var(--panel)] border border-[var(--line)] rounded-xl overflow-hidden text-sm">
+          <div className="grid grid-cols-[auto_1fr] gap-3 px-4 py-3 border-b border-[var(--line)]">
+            <span className="text-[var(--teal)]">📩 Invitación a la clase</span>
+            <span className="text-[var(--paper-dim)]">Antes de la clase — fecha, hora, link de Meet, grupo de WhatsApp</span>
+          </div>
+          <div className="grid grid-cols-[auto_1fr] gap-3 px-4 py-3">
+            <span className="text-[var(--teal)]">🚀 Oferta de los cursos</span>
+            <span className="text-[var(--paper-dim)]">Después de la clase — links a IA para Emprender y De la Idea al Negocio</span>
+          </div>
+        </div>
       </section>
 
       <section>

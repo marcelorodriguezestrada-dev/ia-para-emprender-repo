@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import { listarLeads, guardarLead, type Lead } from "@/lib/leads";
 
-const PLANTILLA_DEFAULT_ASUNTO = "Tu clase gratuita de IA para Emprender 🎓";
-const PLANTILLA_DEFAULT_CUERPO = `<p>Hola {{nombre}},</p>
+const PLANTILLA_INVITACION_ASUNTO = "Tu clase gratuita de IA para Emprender 🎓";
+const PLANTILLA_INVITACION_CUERPO = `<p>Hola {{nombre}},</p>
 <p>¡Confirmado! Ya tenés tu lugar reservado en la clase gratuita de <b>IA para Emprender</b>.</p>
 <p>
   📅 Fecha: {{fecha}}<br/>
@@ -19,17 +19,45 @@ const PLANTILLA_DEFAULT_CUERPO = `<p>Hola {{nombre}},</p>
 <p>Te esperamos ahí. Cualquier duda, respondé este mail.</p>
 <p>— IA para Emprender</p>`;
 
+const PLANTILLA_POSTCLASE_ASUNTO = "¿Seguimos? Esto es lo que viene después de la clase 🚀";
+const PLANTILLA_POSTCLASE_CUERPO = `<p>Hola {{nombre}},</p>
+<p>¡Gracias por venir a la clase! Si te quedaste con ganas de más, esto es lo que sigue:</p>
+<p>
+  → Si lo que te frenaba era no saber vender o conseguir clientes:<br/>
+  <b>IA para Emprender</b> — <a href="{{curso1}}">{{curso1}}</a>
+</p>
+<p>
+  → Si lo que te frenaba era no saber si tu idea sirve, o querés ir más a fondo con la tecnología:<br/>
+  <b>De la Idea al Negocio</b> — <a href="{{curso2}}">{{curso2}}</a>
+</p>
+<p>Cupo limitado porque es grupo reducido, no por apurarte. Cualquier duda, respondé este mail.</p>
+<p>— IA para Emprender</p>`;
+
 export default function MailPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [cargando, setCargando] = useState(true);
   const [seleccionados, setSeleccionados] = useState<Set<string>>(new Set());
 
-  const [asunto, setAsunto] = useState(PLANTILLA_DEFAULT_ASUNTO);
-  const [cuerpo, setCuerpo] = useState(PLANTILLA_DEFAULT_CUERPO);
+  const [plantilla, setPlantilla] = useState<"invitacion" | "postclase">("invitacion");
+  const [asunto, setAsunto] = useState(PLANTILLA_INVITACION_ASUNTO);
+  const [cuerpo, setCuerpo] = useState(PLANTILLA_INVITACION_CUERPO);
   const [fechaISO, setFechaISO] = useState(""); // ej: "2026-08-08", lo que da <input type="date">
   const [horaISO, setHoraISO] = useState(""); // ej: "19:00", lo que da <input type="time">
   const [link, setLink] = useState("");
   const [grupoWhatsapp, setGrupoWhatsapp] = useState("");
+  const [linkCurso1, setLinkCurso1] = useState(""); // IA para Emprender
+  const [linkCurso2, setLinkCurso2] = useState(""); // De la Idea al Negocio
+
+  function elegirPlantilla(nueva: "invitacion" | "postclase") {
+    setPlantilla(nueva);
+    if (nueva === "invitacion") {
+      setAsunto(PLANTILLA_INVITACION_ASUNTO);
+      setCuerpo(PLANTILLA_INVITACION_CUERPO);
+    } else {
+      setAsunto(PLANTILLA_POSTCLASE_ASUNTO);
+      setCuerpo(PLANTILLA_POSTCLASE_CUERPO);
+    }
+  }
   // Convierte "2026-08-08" en "sábado, 8 de agosto" para que el mail se lea
   // natural, aunque la persona haya elegido la fecha con el selector.
   const fechaFormateada = fechaISO
@@ -134,7 +162,14 @@ export default function MailPage() {
           destinatarios,
           asunto,
           cuerpoHtml: cuerpo,
-          variablesExtra: { fecha: fechaFormateada, hora: horaFormateada, link, grupo: grupoWhatsapp },
+          variablesExtra: {
+            fecha: fechaFormateada,
+            hora: horaFormateada,
+            link,
+            grupo: grupoWhatsapp,
+            curso1: linkCurso1,
+            curso2: linkCurso2,
+          },
           solicitanteEmail: auth.currentUser?.email,
         }),
       });
@@ -249,58 +284,113 @@ export default function MailPage() {
 
       <section>
         <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "Unbounded, sans-serif" }}>
+          Qué mail mandás
+        </h2>
+        <div className="flex gap-2 mb-6">
+          <button
+            onClick={() => elegirPlantilla("invitacion")}
+            className={`text-sm font-semibold px-4 py-2.5 rounded-lg border ${
+              plantilla === "invitacion"
+                ? "border-[var(--teal)] text-[var(--teal)] bg-[var(--teal)]/10"
+                : "border-[var(--line)] text-[var(--paper-dim)]"
+            }`}
+          >
+            📩 Invitación a la clase (antes)
+          </button>
+          <button
+            onClick={() => elegirPlantilla("postclase")}
+            className={`text-sm font-semibold px-4 py-2.5 rounded-lg border ${
+              plantilla === "postclase"
+                ? "border-[var(--teal)] text-[var(--teal)] bg-[var(--teal)]/10"
+                : "border-[var(--line)] text-[var(--paper-dim)]"
+            }`}
+          >
+            🚀 Oferta de los cursos (después)
+          </button>
+        </div>
+
+        <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "Unbounded, sans-serif" }}>
           Datos de la clase
         </h2>
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
-              Fecha
-            </label>
-            <input
-              type="date"
-              value={fechaISO}
-              onChange={(e) => setFechaISO(e.target.value)}
-              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)] [color-scheme:dark]"
-            />
-            {fechaFormateada && (
-              <p className="text-xs text-[var(--teal)] mt-1.5">Se va a ver así: {fechaFormateada}</p>
-            )}
+        {plantilla === "invitacion" ? (
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+                Fecha
+              </label>
+              <input
+                type="date"
+                value={fechaISO}
+                onChange={(e) => setFechaISO(e.target.value)}
+                className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)] [color-scheme:dark]"
+              />
+              {fechaFormateada && (
+                <p className="text-xs text-[var(--teal)] mt-1.5">Se va a ver así: {fechaFormateada}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+                Hora
+              </label>
+              <input
+                type="time"
+                value={horaISO}
+                onChange={(e) => setHoraISO(e.target.value)}
+                className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)] [color-scheme:dark]"
+              />
+              {horaFormateada && (
+                <p className="text-xs text-[var(--teal)] mt-1.5">Se va a ver así: {horaFormateada}</p>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+                Link de acceso
+              </label>
+              <input
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                placeholder="https://meet.google.com/..."
+                className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+                Grupo WhatsApp (en vivo)
+              </label>
+              <input
+                value={grupoWhatsapp}
+                onChange={(e) => setGrupoWhatsapp(e.target.value)}
+                placeholder="https://chat.whatsapp.com/..."
+                className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
-              Hora
-            </label>
-            <input
-              type="time"
-              value={horaISO}
-              onChange={(e) => setHoraISO(e.target.value)}
-              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)] [color-scheme:dark]"
-            />
-            {horaFormateada && <p className="text-xs text-[var(--teal)] mt-1.5">Se va a ver así: {horaFormateada}</p>}
+        ) : (
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+                Link — IA para Emprender
+              </label>
+              <input
+                value={linkCurso1}
+                onChange={(e) => setLinkCurso1(e.target.value)}
+                placeholder="https://.../registro o el link de venta"
+                className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+                Link — De la Idea al Negocio
+              </label>
+              <input
+                value={linkCurso2}
+                onChange={(e) => setLinkCurso2(e.target.value)}
+                placeholder="https://..."
+                className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+              />
+            </div>
           </div>
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
-              Link de acceso
-            </label>
-            <input
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              placeholder="https://meet.google.com/..."
-              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
-              Grupo WhatsApp (en vivo)
-            </label>
-            <input
-              value={grupoWhatsapp}
-              onChange={(e) => setGrupoWhatsapp(e.target.value)}
-              placeholder="https://chat.whatsapp.com/..."
-              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
-            />
-          </div>
-        </div>
+        )}
 
         <div className="mb-4">
           <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
@@ -315,7 +405,10 @@ export default function MailPage() {
 
         <div className="mb-2">
           <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
-            Cuerpo del mail (HTML) — usá {"{{nombre}}"}, {"{{fecha}}"}, {"{{hora}}"}, {"{{link}}"}, {"{{grupo}}"}
+            Cuerpo del mail (HTML) — usá {"{{nombre}}"}
+            {plantilla === "invitacion"
+              ? <>, {"{{fecha}}"}, {"{{hora}}"}, {"{{link}}"}, {"{{grupo}}"}</>
+              : <>, {"{{curso1}}"}, {"{{curso2}}"}</>}
           </label>
           <textarea
             value={cuerpo}
