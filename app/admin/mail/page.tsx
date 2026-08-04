@@ -10,7 +10,11 @@ const PLANTILLA_DEFAULT_CUERPO = `<p>Hola {{nombre}},</p>
 <p>
   📅 Fecha: {{fecha}}<br/>
   🕐 Hora: {{hora}}<br/>
-  🔗 Link de acceso: <a href="{{link}}">{{link}}</a>
+  🔗 Link de acceso (Meet): <a href="{{link}}">{{link}}</a>
+</p>
+<p>
+  💬 Para seguir en vivo y no perderte nada (avisos, cambios de horario, material extra),
+  sumate también al grupo de WhatsApp: <a href="{{grupo}}">{{grupo}}</a>
 </p>
 <p>Te esperamos ahí. Cualquier duda, respondé este mail.</p>
 <p>— IA para Emprender</p>`;
@@ -25,7 +29,7 @@ export default function MailPage() {
   const [fechaISO, setFechaISO] = useState(""); // ej: "2026-08-08", lo que da <input type="date">
   const [horaISO, setHoraISO] = useState(""); // ej: "19:00", lo que da <input type="time">
   const [link, setLink] = useState("");
-
+  const [grupoWhatsapp, setGrupoWhatsapp] = useState("");
   // Convierte "2026-08-08" en "sábado, 8 de agosto" para que el mail se lea
   // natural, aunque la persona haya elegido la fecha con el selector.
   const fechaFormateada = fechaISO
@@ -130,7 +134,7 @@ export default function MailPage() {
           destinatarios,
           asunto,
           cuerpoHtml: cuerpo,
-          variablesExtra: { fecha: fechaFormateada, hora: horaFormateada, link },
+          variablesExtra: { fecha: fechaFormateada, hora: horaFormateada, link, grupo: grupoWhatsapp },
           solicitanteEmail: auth.currentUser?.email,
         }),
       });
@@ -247,7 +251,7 @@ export default function MailPage() {
         <h2 className="text-lg font-bold mb-4" style={{ fontFamily: "Unbounded, sans-serif" }}>
           Datos de la clase
         </h2>
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-4 gap-4 mb-6">
           <div>
             <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
               Fecha
@@ -285,6 +289,17 @@ export default function MailPage() {
               className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
             />
           </div>
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
+              Grupo WhatsApp (en vivo)
+            </label>
+            <input
+              value={grupoWhatsapp}
+              onChange={(e) => setGrupoWhatsapp(e.target.value)}
+              placeholder="https://chat.whatsapp.com/..."
+              className="w-full bg-[var(--bg)] border border-[var(--line)] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[var(--teal)]"
+            />
+          </div>
         </div>
 
         <div className="mb-4">
@@ -300,7 +315,7 @@ export default function MailPage() {
 
         <div className="mb-2">
           <label className="block text-xs font-mono uppercase tracking-wide text-[var(--paper-dim)] mb-2">
-            Cuerpo del mail (HTML) — usá {"{{nombre}}"}, {"{{fecha}}"}, {"{{hora}}"}, {"{{link}}"}
+            Cuerpo del mail (HTML) — usá {"{{nombre}}"}, {"{{fecha}}"}, {"{{hora}}"}, {"{{link}}"}, {"{{grupo}}"}
           </label>
           <textarea
             value={cuerpo}

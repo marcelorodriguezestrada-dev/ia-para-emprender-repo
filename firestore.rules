@@ -14,6 +14,12 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
+    // Materiales de las clases (diapositivas, videos, accesos): mismo
+    // criterio, solo para admins logueados.
+    match /materiales/{docId} {
+      allow read, write: if request.auth != null;
+    }
+
     // Leads del formulario de /registro: cualquiera puede CREAR uno (es
     // público, sin login), pero solo un admin logueado puede leerlos —
     // así nadie puede scrapear la lista de mails de otra gente.

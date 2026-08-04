@@ -11,6 +11,8 @@ const TABS = [
   { href: "/admin/panel", label: "Panel" },
   { href: "/admin/campanas", label: "Campañas IA" },
   { href: "/admin/mail", label: "Mail a inscriptos" },
+  { href: "/admin/materiales", label: "Materiales" },
+  { href: "/admin/flujo", label: "Flujo" },
   { href: "/admin", label: "Post rápido" },
   { href: "/admin/utm", label: "Links UTM" },
 ];

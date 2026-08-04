@@ -1,5 +1,5 @@
 // Reemplazá este link por el de invitación real de tu Comunidad/Grupo de WhatsApp
-const LINK_GRUPO_WHATSAPP = "https://chat.whatsapp.com/Eg9RBYPZclCAFNNuz2PJgl";
+const LINK_GRUPO_WHATSAPP = "https://chat.whatsapp.com/TU-LINK-DE-INVITACION";
 
 // Mismo celular que usás en el resto del sitio, para el "si tenés problemas, escribinos"
 const WHATSAPP_AYUDA = "5491167076678";

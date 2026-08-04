@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { enviarMailMasivo, type DestinatarioMail } from "@/lib/email";
 
+// Protección liviana: quien llame a este endpoint tiene que mandar un mail
+// que esté en la lista de admins — no es una verificación criptográfica
+// real (para eso haría falta Firebase Admin SDK verificando el ID token),
+// pero evita que cualquiera que encuentre la URL mande mails con tu cuenta.
 const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
   .split(",")
   .map((e) => e.trim().toLowerCase())

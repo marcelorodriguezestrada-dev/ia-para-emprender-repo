@@ -29,6 +29,10 @@ export interface ResultadoEnvio {
   error?: string;
 }
 
+/**
+ * Reemplaza placeholders tipo {{nombre}} en el asunto/cuerpo por el valor
+ * real de cada destinatario, antes de mandar cada mail.
+ */
 function personalizar(texto: string, datos: Record<string, string>): string {
   return texto.replace(/\{\{(\w+)\}\}/g, (match, clave) => datos[clave] ?? match);
 }
