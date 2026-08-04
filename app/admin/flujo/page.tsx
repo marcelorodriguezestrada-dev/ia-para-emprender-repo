@@ -144,12 +144,48 @@ export default function FlujoPage() {
 
       <section>
         <h2 className="text-sm font-mono uppercase tracking-wide text-[var(--teal)] mb-5">
+          E. Alguien decide anotarse al curso pago
+        </h2>
+
+        <Paso n={7} titulo="Aprieta 'Anotarme al curso' en la landing">
+          <p>
+            Llega a <b>/inscripcion-curso</b>, completa nombre, mail, WhatsApp y su idea de negocio. Al
+            enviar, queda guardado automáticamente en <b>Alumnos</b> (estado: Pendiente de pago) y lo
+            redirige a <b>/pago</b>, donde ve el CBU/alias y un botón para mandarte el comprobante por
+            WhatsApp.
+          </p>
+        </Paso>
+
+        <Paso n={8} titulo="Te llega el comprobante por WhatsApp">
+          <Mensaje etiqueta="Respondés esto (al confirmar el pago)">
+            ¡Recibido! ✅ Ya está confirmado tu lugar en IA para Emprender. Nos vemos en la Clase 1 —
+            cualquier cosa que necesites antes, escribime por acá.
+          </Mensaje>
+          <p>
+            👉 Vas a <b>Alumnos</b>, buscás su nombre, y apretás <b>"✓ Marcar como pagado"</b>.
+          </p>
+        </Paso>
+
+        <Paso n={9} titulo="Antes de cada clase, revisás la idea y dejás notas">
+          <p>
+            En <b>Alumnos</b>, abrís la tarjeta de cada uno: ahí está lo que contó de su negocio al
+            anotarse, y un cuadro de notas privadas tuyas — usalo para anotar qué sugerirle en la próxima
+            clase, en qué está trabado, o qué avanzó.
+          </p>
+        </Paso>
+      </section>
+
+      <section>
+        <h2 className="text-sm font-mono uppercase tracking-wide text-[var(--teal)] mb-5">
           Mapa rápido: dónde se hace cada cosa
         </h2>
         <div className="bg-[var(--panel)] border border-[var(--line)] rounded-xl overflow-hidden text-sm">
           {[
             ["Alguien se registra solo (formulario web)", "Aparece solo en Panel y Mail a inscriptos"],
             ["Alguien te escribe por WhatsApp", "Mail a inscriptos → Agregar alguien que te escribió por WhatsApp"],
+            ["Alguien se anota al curso pago", "Aparece solo en Alumnos, como Pendiente de pago"],
+            ["Te llega un comprobante de pago", "Alumnos → buscar y marcar como Pagado"],
+            ["Ver la idea de un alumno y dejarle notas", "Alumnos → abrir su tarjeta"],
             ["Mandar el mail con fecha/hora/links de la clase", "Mail a inscriptos"],
             ["Ver cuánta gente se anotó y de dónde vino", "Panel"],
             ["Armar posts para redes con IA", "Campañas IA"],

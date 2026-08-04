@@ -17,6 +17,9 @@ Proyecto único de Next.js con dos partes:
 | `/admin/mail` | Mandar mail masivo a los inscriptos (con los datos de la clase) | Privada — requiere login |
 | `/admin` | Generador de un post suelto con IA (más rápido, para algo puntual) | Privada — requiere login |
 | `/admin/utm` | Campañas UTM manuales + contador de clics | Privada — requiere login |
+| `/inscripcion-curso` | Anotarse al curso pago (nombre, mail, WhatsApp, idea de negocio) | Pública |
+| `/pago` | Datos bancarios (CBU/alias) + botón para mandar el comprobante por WhatsApp | Pública (se llega solo después de `/inscripcion-curso`) |
+| `/admin/alumnos` | Ver alumnos, su idea, marcar pagos, y dejarles notas de seguimiento | Privada — requiere login |
 | `/go/[id]` | Link corto que cuenta el clic y redirige (lo genera `/admin/utm` y `/admin/campanas`) | Pública (pero no se navega a mano, se comparte el link generado) |
 
 ## Antes de publicarla — completar esto
@@ -55,6 +58,23 @@ Pasos para la API key:
 
 - En `app/gracias/page.tsx`: reemplazá `LINK_GRUPO_WHATSAPP` por el link de invitación real de tu Comunidad/Grupo de WhatsApp
 - El celular de contacto (Argentina) ya está cargado en los botones de WhatsApp de la landing. El de Bolivia todavía es un placeholder — buscá `59100000000` en `components/IAParaEmprenderLanding.tsx` y reemplazalo por el número real de Daniel cuando lo tengas
+
+### 3.5 Datos bancarios (para cobrar el curso pago) — completar antes de publicar
+
+En `lib/config.ts`, buscá el bloque `DATOS_PAGO` y reemplazá con tus datos reales:
+
+```typescript
+export const DATOS_PAGO = {
+  banco: "Banco [tu banco]",
+  titular: "Marcelo Rodríguez Estrada",
+  cbu: "0000000000000000000000",
+  alias: "IA.PARA.EMPRENDER",
+  cuit: "20-00000000-0",
+  whatsappComprobante: "5491167076678",
+};
+```
+
+Estos son los datos que ve cualquiera que se anote en `/inscripcion-curso` y llegue a `/pago` — si los dejás con los valores de ejemplo, nadie te va a poder pagar de verdad.
 
 ### 4. Variables de entorno
 

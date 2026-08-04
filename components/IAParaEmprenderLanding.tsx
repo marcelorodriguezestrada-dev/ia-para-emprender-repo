@@ -123,7 +123,6 @@ export default function IAParaEmprenderLanding() {
   }, []);
 
   const precio = CONFIG.precios[country];
-  const ctaPrecioHref = waLink(CONFIG.whatsapp[country], CONFIG.mensajeWhatsapp);
 
   // Los botones de arriba (nav, hero, flotante) usan siempre el WhatsApp de
   // Argentina porque aparecen antes de que el visitante elija país en la
@@ -1050,8 +1049,8 @@ export default function IAParaEmprenderLanding() {
                 {precio.valor}
               </div>
               <div className="price-note">pago único · {precio.moneda} · precio de lanzamiento</div>
-              <a className="btn-block" href={ctaPrecioHref} target="_blank" rel="noopener noreferrer">
-                Anotarme por WhatsApp
+              <a className="btn-block" href="/inscripcion-curso">
+                Anotarme al curso →
               </a>
             </div>
           </div>

@@ -20,6 +20,19 @@ service cloud.firestore {
       allow read, write: if request.auth != null;
     }
 
+    // Alumnos del curso pago: cualquiera puede inscribirse (create), pero
+    // SIEMPRE arranca en "pendiente_pago" y sin notas — así nadie puede
+    // mandarse a sí mismo como "pagado" falseando el campo. Leer, cambiar
+    // el estado a pagado, o escribir notas, es solo para admins logueados.
+    match /alumnos/{docId} {
+      allow create: if request.resource.data.estado == "pendiente_pago"
+                       && request.resource.data.notas == ""
+                       && request.resource.data.nombre is string
+                       && request.resource.data.email is string
+                       && request.resource.data.idea is string;
+      allow read, update, delete: if request.auth != null;
+    }
+
     // Leads del formulario de /registro: cualquiera puede CREAR uno (es
     // público, sin login), pero solo un admin logueado puede leerlos —
     // así nadie puede scrapear la lista de mails de otra gente.
